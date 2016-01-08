@@ -49,20 +49,20 @@ install:
     - mv .git ghc/shake-build
     - ( cd ghc/shake-build && git reset --hard HEAD )
 
-    - ( cd ghc/shake-build && cabal install --only-dependencies )
-    - ( cd ghc/shake-build && cabal configure )
+    - ( cd ghc/shake-build && stack build --only-dependencies )
 
     - ( cd ghc && ./boot )
     - ( cd ghc && ./configure )
 
 script:
-    - ( cd ghc/shake-build && cabal haddock --internal )
-    - ./ghc/shake-build/build.sh -j --no-progress $TARGET
+    - ( cd ghc/shake-build && stack build --haddock )
+    - ./ghc/shake-build/build.stack.sh -j --no-progress $TARGET
 
 cache:
     directories:
         - $HOME/.cabal
         - $HOME/.ghc
+        - $HOME/.stack
 
 notifications:
     irc:
