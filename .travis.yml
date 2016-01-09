@@ -3,7 +3,7 @@ sudo: false
 matrix:
     include:
         - os: linux
-          env: CABALVER=1.22 GHCVER=7.10.3 TARGET= STACKARCH=linux-x86_64
+          env: TARGET= STACKARCH=linux-x86_64
           addons:
               apt:
                   packages:
@@ -11,7 +11,7 @@ matrix:
                       - zlib1g-dev
                   sources: hvr-ghc
           before_install:
-              - PATH="/opt/ghc/$GHCVER/bin:$PATH"
+              - PATH="/opt/ghc/7.10.3/bin:$PATH"
               - export PATH
 
         - os: osx
