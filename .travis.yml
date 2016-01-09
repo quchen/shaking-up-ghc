@@ -31,6 +31,14 @@ matrix:
               - export PATH
 
 
+before_install:
+    # Install stack manually, until Travis whitelists the apt package
+    - mkdir -p ~/.local/bin
+    - export PATH=$HOME/.local/bin:$PATH
+    - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+    - travis_retry git clone git://git.haskell.org/ghc --recurse-submodules
+
 install:
 
     - env
@@ -38,8 +46,6 @@ install:
     - cabal --version
     - alex --version
     - happy --version
-
-    - travis_retry git clone git://git.haskell.org/ghc --recurse-submodules
 
     # Travis clones the project into ".", but we need it as a child directory
     # of "ghc/". For this reason, we - rather hackily - move the GHC-Shake
@@ -60,8 +66,6 @@ script:
 
 cache:
     directories:
-        - $HOME/.cabal
-        - $HOME/.ghc
         - $HOME/.stack
 
 notifications:
