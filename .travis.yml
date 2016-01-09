@@ -3,39 +3,32 @@ sudo: false
 matrix:
     include:
         - os: linux
-          env: CABALVER=1.22 GHCVER=7.10.3 TARGET=
+          env: CABALVER=1.22 GHCVER=7.10.3 TARGET= STACKARCH=linux-x86_64
           addons:
               apt:
                   packages:
                       - ghc-7.10.3
-                      - alex-3.1.4
-                      - happy-1.19.5
-                      - cabal-install-1.22
                       - zlib1g-dev
                   sources: hvr-ghc
           before_install:
               - PATH="/opt/ghc/$GHCVER/bin:$PATH"
-              - PATH="/opt/cabal/$CABALVER/bin:$PATH"
-              - PATH="$HOME/.cabal/bin:$PATH"
               - export PATH
-              - cabal update
 
         - os: osx
-          env: TARGET=libraries/base/stage1/build/libHSbase-4.9.0.0.a
+          env: TARGET=libraries/base/stage1/build/libHSbase-4.9.0.0.a STACKARCH=osx-x86_64
           before_install:
               - brew update
-              - brew install ghc cabal-install
-              - cabal update
-              - cabal install alex happy
-              - PATH="$HOME/.cabal/bin:$PATH"
+              - brew install ghc
               - export PATH
 
-
 before_install:
-    # Install stack manually, until Travis whitelists the apt package
+
+    # Install Stack
     - mkdir -p ~/.local/bin
-    - export PATH="$HOME/.local/bin:$PATH"
-    - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+    - PATH="$HOME/.local/bin:$PATH"
+    - travis_retry curl -L "https://www.stackage.org/stack/$STACKARCH" | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+    - stack install happy alex
 
     - travis_retry git clone git://git.haskell.org/ghc --recurse-submodules
 
